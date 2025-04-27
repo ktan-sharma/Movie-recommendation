@@ -6,6 +6,7 @@ from flask_cors import CORS
 CORS(app)
 
 @app.route('/api/recommendations', methods=['GET'])
+@app.route('/api/recommendations/', methods=['GET'])
 def get_recommendations():
     user_id = request.args.get('user_id')
     if not user_id:
