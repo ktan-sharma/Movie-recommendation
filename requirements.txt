@@ -6,3 +6,4 @@ sentence-transformers
 flask-cors
 gunicorn
 firebase-admin
+pandas
