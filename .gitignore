@@ -47,6 +47,18 @@ build/Release
 # Dependency directories
 node_modules/
 
+# Python virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Sensitive files
+movie_embeddings.pkl
+flickpick-23118-firebase-adminsdk-fbsvc-4747d58b26.json
+.env
+
 # Optional npm cache directory
 .npm
 
