@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Watchlist - FLICKPICK</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <header>
+        <nav>
+            <h1>FLICKPICK</h1>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="#">Latest Reviews</a>
+                <a href="#">Top Rated</a>
+                <div class="profile-container">
+                  <img src="https://ui-avatars.com/api/?name=User&background=444&color=fff" alt="Profile" class="profile-image" onerror="this.style.display='none'">
+                  <span class="profile-initials">KS</span>
+                </div>
+                <button id="loginBtn" class="login-btn">Login</button> <!-- Hidden when logged in via auth.js -->
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="watchlist-section">
+            <h2 class="section-title">My Watchlist</h2>
+            <div id="watchlistContainer" class="watchlist-grid">
+                <div class="loading">Loading watchlist...</div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p> 2024 FLICKPICK. All rights reserved.</p>
+    </footer>
+
+    <script type="module" src="config.js"></script>
+    <script type="module" src="auth.js"></script>
+    <script type="module" src="watchlist.js"></script>
+</body>
+</html>

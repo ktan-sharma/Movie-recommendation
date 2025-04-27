@@ -1,0 +1,157 @@
+/* --- MODERN NETFLIX STYLE FOR MUST WATCH CENTURY PAGE --- */
+.mustwatch-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: linear-gradient(to bottom, rgba(20,20,20,0.98) 60%, #141414 100%);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 32px 0 rgba(0,0,0,0.65);
+}
+
+.hero-section {
+    text-align: center;
+    padding: 4rem 0 2.5rem 0;
+    background: linear-gradient(120deg, #1a1a1a 60%, #e50914 100%);
+    margin-bottom: 2.5rem;
+    border-radius: 1.5rem 1.5rem 0 0;
+    box-shadow: 0 4px 24px 0 rgba(229,9,20,0.15);
+}
+
+.hero-section h1 {
+    font-size: 3.2rem;
+    margin-bottom: 0.7rem;
+    color: #fff;
+    letter-spacing: 2px;
+    font-weight: 900;
+    text-shadow: 0 4px 24px #e5091455, 0 1px 0 #000;
+}
+
+.hero-section p {
+    font-size: 1.4rem;
+    color: #f3f3f3;
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+}
+
+.filters-section {
+    margin-bottom: 2.5rem;
+}
+
+.filter-container {
+    display: flex;
+    gap: 1.2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    background: #181818;
+    padding: 1.2rem 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 2px 16px 0 rgba(0,0,0,0.18);
+}
+
+.filter-container select {
+    padding: 0.6rem 1.3rem;
+    background: #232323;
+    color: #fff;
+    border: 1px solid #333;
+    border-radius: 2rem;
+    cursor: pointer;
+    font-size: 1.08rem;
+    transition: background 0.2s, border 0.2s;
+}
+.filter-container select:focus {
+    outline: none;
+    border: 1.5px solid #e50914;
+}
+
+.movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 2.2rem;
+    padding: 1.5rem 0 2rem 0;
+}
+
+.movie-card {
+    position: relative;
+    background: #181818;
+    border-radius: 1.2rem;
+    overflow: hidden;
+    box-shadow: 0 4px 24px 0 rgba(0,0,0,0.50);
+    transition: transform 0.28s cubic-bezier(.25,.8,.25,1), box-shadow 0.28s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.movie-card:hover {
+    transform: scale(1.07);
+    box-shadow: 0 8px 32px 0 rgba(229,9,20,0.18);
+    z-index: 2;
+}
+
+.movie-rank {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: #e50914;
+    color: white;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.15rem;
+    box-shadow: 0 2px 8px 0 rgba(229,9,20,0.15);
+    z-index: 1;
+}
+
+.movie-card img {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 1.2rem 1.2rem 0 0;
+    background: #232323;
+}
+
+.movie-card-title {
+    font-size: 1.18rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 1rem 0 0.5rem 0;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+.movie-card-meta {
+    color: #e0e0e0;
+    font-size: 0.98rem;
+    margin-bottom: 0.8rem;
+    text-align: center;
+}
+
+.loading-spinner {
+    display: none;
+    justify-content: center;
+    padding: 2.5rem;
+    font-size: 2.2rem;
+    color: #e50914;
+}
+
+@media (max-width: 900px) {
+    .mustwatch-container {
+        padding: 0.5rem;
+    }
+    .hero-section {
+        padding: 2.5rem 0 1.2rem 0;
+        font-size: 2.1rem;
+    }
+    .movies-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 1.2rem;
+    }
+    .movie-card img {
+        height: 200px;
+    }
+}

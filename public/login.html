@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - FLICKPICK</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom right, #181818 60%, #e50914 120%);
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=1500&q=80') center/cover no-repeat;
+            opacity: 0.18;
+            z-index: 0;
+        }
+        .login-container {
+            background: rgba(34,34,34,0.98);
+            padding: 2.5rem 2.8rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 32px #000a;
+            min-width: 340px;
+            z-index: 1;
+            position: relative;
+        }
+        .login-container h2 {
+            color: #e50914;
+            margin-bottom: 1.5rem;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        .login-container input {
+            width: 100%;
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            border-radius: 4px;
+            border: none;
+            background: #232323;
+            color: #fff;
+            font-size: 1rem;
+        }
+        .login-container input:focus {
+            outline: 2px solid #e50914;
+            background: #181818;
+        }
+        .login-container button {
+            width: 100%;
+            background: #e50914;
+            color: #fff;
+            border: none;
+            padding: 0.9rem;
+            border-radius: 4px;
+            font-size: 1.07rem;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-top: 0.5rem;
+            box-shadow: 0 2px 6px #0005;
+        }
+        .login-container button:hover {
+            background: #b0060f;
+        }
+        .login-container .error {
+            color: #ff4d4f;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login to FLICKPICK</h2>
+        <div id="loginError" class="error" style="display:none;"></div>
+        <input type="text" id="loginEmailPage" placeholder="Email">
+        <div style="position:relative;">
+          <input type="password" id="loginPasswordPage" placeholder="Password" style="width:100%;padding-right:38px;">
+          <span id="toggleLoginPasswordPage" title="Show/Hide password" style="position:absolute;top:50%;right:12px;transform:translateY(-50%);cursor:pointer;font-size:1.5rem;color:#e50914;z-index:2;">
+            <i class="fas fa-eye"></i>
+          </span>
+        </div>
+        <button id="loginSubmit">Login</button>
+        <div style="text-align:center; margin-top:1rem;">
+            <span>Don't have an account? <a href="register.html" style="color:#e50914;">Register</a></span>
+        </div>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+    <script>
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBl3JJMFSkWYaTFpw2jJLWDGeCyAmgcM2w",
+      authDomain: "flickpick-23118.firebaseapp.com",
+      projectId: "flickpick-23118",
+      storageBucket: "flickpick-23118.appspot.com",
+      messagingSenderId: "493432586221",
+      appId: "1:493432586221:web:0a15cbb278ee94261c31e4",
+      measurementId: "G-PHJKYQ7BTP"
+    };
+    // Initialize Firebase (only if not already initialized)
+    if (!firebase.apps || !firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    </script>
+    <script>
+        document.getElementById('loginSubmit').onclick = function() {
+            const email = document.getElementById('loginEmailPage').value.trim();
+            const password = document.getElementById('loginPasswordPage').value;
+            const errorDiv = document.getElementById('loginError');
+            errorDiv.style.display = 'none';
+            errorDiv.textContent = '';
+            if (!email || !password) {
+                errorDiv.textContent = 'Please enter both email and password.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            // Use Firebase Auth
+            firebase.auth().signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    window.location.href = 'index.html';
+                })
+                .catch((error) => {
+                    let msg;
+                    console.error('Login error:', error.code, error.message);
+                    switch (error.code) {
+                        case 'auth/user-not-found':
+                        case 'auth/wrong-password':
+                            msg = 'Invalid email or password.';
+                            break;
+                        case 'auth/invalid-email':
+                            msg = 'Please enter a valid email address.';
+                            break;
+                        case 'auth/too-many-requests':
+                            msg = 'Too many failed attempts. Please try again later or reset your password.';
+                            break;
+                        case 'auth/network-request-failed':
+                            msg = 'Network error. Please check your internet connection.';
+                            break;
+                        case 'auth/internal-error':
+                            msg = 'Internal error. Please try again.';
+                            break;
+                        case 'auth/operation-not-allowed':
+                            msg = 'Email/password login is not enabled. Please contact support.';
+                            break;
+                        default:
+                            msg = error.message;
+                    }
+                    errorDiv.textContent = msg;
+                    errorDiv.style.display = 'block';
+                });
+        };
+
+        // Show/hide password toggle
+        const loginPassword = document.getElementById('loginPasswordPage');
+        const toggleLoginPassword = document.getElementById('toggleLoginPasswordPage');
+        toggleLoginPassword.onclick = function() {
+            if (loginPassword.type === 'password') {
+                loginPassword.type = 'text';
+                toggleLoginPassword.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+                loginPassword.type = 'password';
+                toggleLoginPassword.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+        };
+
+        // Google Sign-In
+        document.getElementById('googleLoginBtn').onclick = function() {
+            const errorDiv = document.getElementById('loginError');
+            errorDiv.style.display = 'none';
+            errorDiv.textContent = '';
+            const provider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithPopup(provider)
+                .then(() => {
+                    window.location.href = 'index.html';
+                })
+                .catch((error) => {
+                    let msg = error.message;
+                    if (error.code === 'auth/popup-closed-by-user') {
+                        msg = 'Google sign-in popup was closed.';
+                    }
+                    errorDiv.textContent = msg;
+                    errorDiv.style.display = 'block';
+                });
+        };
+    </script>
+</body>
+</html>

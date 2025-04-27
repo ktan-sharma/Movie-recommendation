@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - FLICKPICK</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link href="admin.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body class="admin-body">
+    <div class="admin-login-container" id="adminLoginContainer">
+        <div class="admin-login-box">
+            <h1><i class="fas fa-lock"></i> Admin Login</h1>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label for="adminUsername">Username</label>
+                    <input type="text" id="adminUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <input type="password" id="adminPassword" required>
+                </div>
+                <button type="submit" class="admin-login-btn">Login</button>
+            </form>
+            <div id="adminLoginError" class="error-message"></div>
+        </div>
+    </div>
+
+    <div class="admin-dashboard" id="adminDashboard" style="display: none;">
+        <nav class="admin-nav">
+            <h1>FLICKPICK Admin</h1>
+            <button id="adminLogoutBtn" class="admin-logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </nav>
+
+        <div class="admin-content">
+            <div class="admin-sidebar">
+                <div class="admin-menu">
+                    <button class="admin-menu-item active" data-tab="overview">
+                        <i class="fas fa-chart-line"></i> Overview
+                    </button>
+                    <button class="admin-menu-item" data-tab="users">
+                        <i class="fas fa-users"></i> Users
+                    </button>
+
+                    <button class="admin-menu-item" data-tab="reviews">
+                        <i class="fas fa-star"></i> Reviews
+                    </button>
+                    <button class="admin-menu-item" data-tab="reports">
+                        <i class="fas fa-flag"></i> Reports
+                    </button>
+                    <button class="admin-menu-item" data-tab="settings">
+                        <i class="fas fa-cog"></i> Settings
+                    </button>
+                </div>
+            </div>
+
+            <div class="admin-main">
+                <div id="overview" class="admin-tab active">
+                    <h2 class="dashboard-title"><i class="fas fa-tachometer-alt"></i> Dashboard Overview</h2>
+                    <div class="stat-cards-row">
+                        <div class="stat-card stat-blue">
+                            <div class="stat-card-header">
+                                <span class="stat-icon"><i class="fas fa-users"></i></span>
+                                <span class="stat-label">Total Users</span>
+                            </div>
+                            <div class="stat-value" id="statUsers">2</div>
+                            <div class="stat-footer"><a href="#">More info <i class="fas fa-arrow-circle-right"></i></a></div>
+                        </div>
+                        <div class="stat-card stat-green">
+                            <div class="stat-card-header">
+                                <span class="stat-icon"><i class="fas fa-film"></i></span>
+                                <span class="stat-label">Total Movies</span>
+                            </div>
+                            <div class="stat-value" id="statMovies">100+</div>
+                            <div class="stat-footer"><a href="#">More info <i class="fas fa-arrow-circle-right"></i></a></div>
+                        </div>
+                        <div class="stat-card stat-yellow">
+                            <div class="stat-card-header">
+                                <span class="stat-icon"><i class="fas fa-star"></i></span>
+                                <span class="stat-label">Total Reviews</span>
+                            </div>
+                            <div class="stat-value" id="statReviews">0</div>
+                            <div class="stat-footer"><a href="#">More info <i class="fas fa-arrow-circle-right"></i></a></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="users" class="admin-tab">
+                    <h2 class="dashboard-title"><i class="fas fa-users"></i> Users</h2>
+                    <div id="usersGrid" class="users-grid"></div>
+                </div>
+                <div id="movies" class="admin-tab">
+                    <!-- Movies management content -->
+                </div>
+                <div id="reviews" class="admin-tab">
+                    <h2 class="dashboard-title"><i class="fas fa-star"></i> Reviews</h2>
+                    <div id="reviewsGrid" class="reviews-grid"></div>
+                </div>
+                <div id="reports" class="admin-tab">
+                    <!-- Reports content -->
+                </div>
+                <div id="settings" class="admin-tab">
+                    <h2 class="dashboard-title"><i class="fas fa-cog"></i> Settings</h2>
+                    <div id="settingsPanel" class="settings-panel stylish">
+                        <div class="settings-group">
+                            <label for="adminChangePassword" class="settings-label"><i class="fas fa-key"></i> Change Admin Password</label>
+                            <div class="settings-inline">
+                                <input type="password" id="adminChangePassword" placeholder="New Password" class="settings-input" />
+                                <button id="adminChangePasswordBtn" class="settings-btn">Change Password</button>
+                            </div>
+                        </div>
+
+                        <div class="settings-group">
+                            <label for="deleteUserSelect" class="settings-label"><i class="fas fa-user-times"></i> Delete User Account</label>
+                            <div class="settings-inline">
+                                <select id="deleteUserSelect" class="settings-input">
+                                    <option value="">Select User...</option>
+                                </select>
+                                <button id="deleteUserBtn" class="settings-btn settings-btn-danger">Delete User</button>
+                            </div>
+                        </div>
+                        <div class="settings-group">
+                            <button id="exportDataBtn" class="settings-btn"><i class="fas fa-download"></i> Export Data (CSV)</button>
+                        </div>
+                    </div>
+                    <style>
+                        .settings-panel.stylish { max-width: 500px; margin: 2rem auto; background: #181c24; padding: 2rem 2.5rem; border-radius: 18px; box-shadow: 0 4px 24px #0003; }
+                        .settings-group { margin-bottom: 2rem; }
+                        .settings-label { font-weight: 600; color: #e74c3c; display: block; margin-bottom: 0.6rem; letter-spacing: 0.01em; }
+                        .settings-inline { display: flex; gap: 1rem; }
+                        .settings-input { padding: 0.6rem 1rem; border-radius: 7px; border: none; background: #232936; color: #fff; font-size: 1rem; }
+                        .settings-input:focus { outline: 2px solid #e74c3c; }
+                        .settings-btn { background: #e74c3c; color: #fff; border: none; border-radius: 7px; padding: 0.6rem 1.3rem; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
+                        .settings-btn:hover { background: #c0392b; }
+                        .settings-btn-danger { background: #c0392b; }
+                        .settings-btn-danger:hover { background: #a93226; }
+                    </style>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./adminManager_patch.js"></script>
+    <script type="module">
+      import { updateAdminLiveStats } from './adminLiveStats.js';
+      // Update stats on initial load (if already logged in)
+      if (localStorage.getItem('adminLoggedIn')) {
+        updateAdminLiveStats();
+      }
+      // Listen for dashboard show event (patch: after login)
+      document.addEventListener('admin-dashboard-shown', updateAdminLiveStats);
+    </script>
+</body>
+</html>

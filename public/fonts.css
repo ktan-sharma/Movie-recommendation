@@ -1,0 +1,28 @@
+/* Fallback: Comment out Netflix Sans font-face rules since font files are missing. */
+/*
+@font-face {
+    font-family: 'Netflix Sans';
+    font-weight: 100;
+    src: url('../fonts/NetflixSans-Thin.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Netflix Sans';
+    font-weight: 300;
+    src: url('../fonts/NetflixSans-Light.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Netflix Sans';
+    font-weight: normal;
+    src: url('../fonts/NetflixSans-Regular.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Netflix Sans';
+    font-weight: 500;
+    src: url('../fonts/NetflixSans-Medium.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Netflix Sans';
+    font-weight: bold;
+    src: url('../fonts/NetflixSans-Bold.woff2') format('woff2');
+}
+*/

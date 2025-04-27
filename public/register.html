@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - FLICKPICK</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom right, #181818 60%, #e50914 120%);
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=1500&q=80') center/cover no-repeat;
+            opacity: 0.18;
+            z-index: 0;
+        }
+        .register-container {
+            background: rgba(34,34,34,0.98);
+            padding: 2.5rem 2.8rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 32px #000a;
+            min-width: 340px;
+            z-index: 1;
+            position: relative;
+        }
+        .register-container h2 {
+            color: #e50914;
+            margin-bottom: 1.5rem;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        .register-container input {
+            width: 100%;
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            border-radius: 4px;
+            border: none;
+            background: #232323;
+            color: #fff;
+            font-size: 1rem;
+        }
+        .register-container input:focus {
+            outline: 2px solid #e50914;
+            background: #181818;
+        }
+        .register-container button {
+            width: 100%;
+            background: #e50914;
+            color: #fff;
+            border: none;
+            padding: 0.9rem;
+            border-radius: 4px;
+            font-size: 1.07rem;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-top: 0.5rem;
+            box-shadow: 0 2px 6px #0005;
+        }
+        .register-container button:hover {
+            background: #b0060f;
+        }
+        .register-container .error {
+            color: #ff4d4f;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .register-container .success {
+            color: #4caf50;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h2>Create Your FLICKPICK Account</h2>
+        <div id="registerError" class="error" style="display:none;"></div>
+        <div id="registerSuccess" class="success" style="display:none;"></div>
+        <input type="text" id="registerNamePage" placeholder="Full Name">
+        <input type="email" id="registerEmailPage" placeholder="Email">
+        <div style="position:relative;">
+          <input type="password" id="registerPasswordPage" placeholder="Password" style="width:100%;padding-right:38px;">
+          <span id="toggleRegisterPasswordPage" title="Show/Hide password" style="position:absolute;top:50%;right:12px;transform:translateY(-50%);cursor:pointer;font-size:1.5rem;color:#e50914;z-index:2;">
+            <i class="fas fa-eye"></i>
+          </span>
+        </div>
+        <button id="registerSubmit">Register</button>
+        
+        <div style="text-align:center; margin-top: 1rem;">
+            <a href="login.html" style="color:#e50914;">Already have an account? Login</a>
+        </div>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+    <script>
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBl3JJMFSkWYaTFpw2jJLWDGeCyAmgcM2w",
+      authDomain: "flickpick-23118.firebaseapp.com",
+      projectId: "flickpick-23118",
+      storageBucket: "flickpick-23118.appspot.com",
+      messagingSenderId: "493432586221",
+      appId: "1:493432586221:web:0a15cbb278ee94261c31e4",
+      measurementId: "G-PHJKYQ7BTP"
+    };
+
+
+    if (!firebase.apps || !firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    // Wait for DOM to be fully loaded before assigning event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('registerSubmit').onclick = function() {
+        const name = document.getElementById('registerNamePage').value.trim();
+        const email = document.getElementById('registerEmailPage').value.trim();
+        const password = document.getElementById('registerPasswordPage').value;
+        const errorDiv = document.getElementById('registerError');
+        const successDiv = document.getElementById('registerSuccess');
+        errorDiv.style.display = 'none';
+        errorDiv.textContent = '';
+        successDiv.style.display = 'none';
+        successDiv.textContent = '';
+        if (!name || !email || !password) {
+            errorDiv.textContent = 'Please fill in all fields.';
+            errorDiv.style.display = 'block';
+            return;
+        }
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                // Optionally update display name
+                return userCredential.user.updateProfile({ displayName: name });
+            })
+            .then(() => {
+                successDiv.textContent = 'Registration successful! Redirecting to login...';
+                successDiv.style.display = 'block';
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+            })
+            .catch((error) => {
+                let msg = error.message;
+                if (error.code === 'auth/email-already-in-use') {
+                    msg = 'Email is already in use.';
+                } else if (error.code === 'auth/invalid-email') {
+                    msg = 'Invalid email address.';
+                } else if (error.code === 'auth/weak-password') {
+                    msg = 'Password should be at least 6 characters.';
+                }
+                errorDiv.textContent = msg;
+                errorDiv.style.display = 'block';
+            });
+    };
+    });
+    </script>
+<script>
+// Show/hide password toggle for register
+const registerPassword = document.getElementById('registerPasswordPage');
+const toggleRegisterPassword = document.getElementById('toggleRegisterPasswordPage');
+toggleRegisterPassword.onclick = function() {
+    if (registerPassword.type === 'password') {
+        registerPassword.type = 'text';
+        toggleRegisterPassword.innerHTML = '<i class="fas fa-eye-slash"></i>';
+    } else {
+        registerPassword.type = 'password';
+        toggleRegisterPassword.innerHTML = '<i class="fas fa-eye"></i>';
+    }
+};
+</script>
+</body>
+</html>

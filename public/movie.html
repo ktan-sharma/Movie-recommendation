@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Details - FLICKPICK</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <header class="main-header">
+        <nav>
+            <div class="nav-left">
+                <h1>FLICKPICK</h1>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="mustwatch.html">Must Watch Century</a>
+                    <a href="#">TV Shows</a>
+                    <a href="#">My List</a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search movies & shows...">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="profile-container">
+                  <img src="profile.jpg" alt="Profile" class="profile-image" onerror="this.style.display='none'">
+                  <span class="profile-initials">KS</span>
+                </div>
+                <button id="loginBtn" class="login-btn">Login</button> <!-- Hidden when logged in via auth.js -->
+            </div>
+        </nav>
+    </header>
+
+    <main id="movieDetails" class="movie-details-page">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading movie details...</p>
+        </div>
+    </main>
+
+    <!-- Review Section -->
+    <section id="reviewSection" class="review-section">
+        <h2>Post a Review</h2>
+        <div id="starRating" class="star-rating">
+            <span data-value="1" class="star">&#9733;</span>
+            <span data-value="2" class="star">&#9733;</span>
+            <span data-value="3" class="star">&#9733;</span>
+            <span data-value="4" class="star">&#9733;</span>
+            <span data-value="5" class="star">&#9733;</span>
+        </div>
+        <textarea id="reviewText" rows="3" placeholder="Write your review..."></textarea>
+        <button id="submitReviewBtn">Submit Review</button>
+        <div id="reviewMessage"></div>
+        <h3>Reviews</h3>
+        <div id="reviewsContainer"></div>
+    </section>
+
+    <footer>
+        <p> 2024 FLICKPICK. All rights reserved.</p>
+    </footer>
+
+    <script type="module">
+        import { MovieDetailsManager } from './moviedetails.js';
+        import { API_KEY, BASE_URL } from './config.js';
+        import { submitReview, fetchReviews } from './review.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const movieManager = new MovieDetailsManager(API_KEY, BASE_URL);
+            // --- Review Logic ---
+            const urlParams = new URLSearchParams(window.location.search);
+            const movieId = urlParams.get('id');
+            let selectedRating = 0;
+            const stars = document.querySelectorAll('#starRating .star');
+            const reviewText = document.getElementById('reviewText');
+            const submitBtn = document.getElementById('submitReviewBtn');
+            const reviewMsg = document.getElementById('reviewMessage');
+            const reviewsContainer = document.getElementById('reviewsContainer');
+
+            function highlightStars(rating) {
+                stars.forEach(star => {
+                    star.classList.toggle('selected', Number(star.dataset.value) <= rating);
+                });
+            }
+            stars.forEach(star => {
+                star.addEventListener('mouseenter', () => highlightStars(Number(star.dataset.value)));
+                star.addEventListener('mouseleave', () => highlightStars(selectedRating));
+                star.addEventListener('click', () => {
+                    selectedRating = Number(star.dataset.value);
+                    highlightStars(selectedRating);
+                });
+            });
+
+            submitBtn.addEventListener('click', async () => {
+                if (!selectedRating) {
+                    reviewMsg.textContent = 'Please select a star rating.';
+                    return;
+                }
+                if (!reviewText.value.trim()) {
+                    reviewMsg.textContent = 'Please enter a review.';
+                    return;
+                }
+                try {
+                    await submitReview(movieId, selectedRating, reviewText.value.trim());
+                    reviewMsg.textContent = 'Review posted!';
+                    reviewText.value = '';
+                    selectedRating = 0;
+                    highlightStars(0);
+                    loadReviews();
+                } catch (e) {
+                    reviewMsg.textContent = e.message || 'Failed to post review.';
+                }
+            });
+
+            async function loadReviews() {
+                reviewsContainer.innerHTML = '<div class="loading">Loading reviews...</div>';
+                try {
+                    const reviews = await fetchReviews(movieId);
+                    if (!reviews.length) {
+                        reviewsContainer.innerHTML = '<div class="empty">No reviews yet.</div>';
+                        return;
+                    }
+                    reviews.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
+                    reviewsContainer.innerHTML = reviews.map(r => `
+                        <div class="review">
+                            <div class="review-header">
+                                <span class="review-user">${r.userName || 'Anonymous'}</span>
+                                <span class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span>
+                                <span class="review-date">${r.createdAt ? new Date(r.createdAt.seconds * 1000).toLocaleString() : ''}</span>
+                            </div>
+                            <div class="review-body">${r.reviewText}</div>
+                        </div>
+                    `).join('');
+                } catch (e) {
+                    reviewsContainer.innerHTML = '<div class="error">Failed to load reviews.</div>';
+                }
+            }
+
+            loadReviews();
+        });
+    </script>
+</body>
+</html>

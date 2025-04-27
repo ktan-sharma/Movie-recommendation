@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Must Watch Century - FLICKPICK</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link href="mustwatch.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <header class="main-header">
+        <nav>
+            <div class="nav-left">
+                <h1>FLICKPICK</h1>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="mustwatch.html" class="active">Must Watch Century</a>
+                    <a href="index.html" id="tvShowsNav">TV Shows</a>
+                    <a href="#">My List</a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="search-bar">
+                    <input type="text" id="movieSearch" placeholder="Search in Must Watch Century...">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="profile-container">
+                  <img src="https://ui-avatars.com/api/?name=User&background=444&color=fff" alt="Profile" class="profile-image" onerror="this.style.display='none'">
+                  <span class="profile-initials">KS</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="mustwatch-container">
+        <section class="hero-section">
+            <h1>Must Watch Century</h1>
+            <p>100 Essential Movies Everyone Should Watch</p>
+        </section>
+
+        <section class="filters-section">
+            <div class="filter-container">
+                <select id="genreFilter">
+                    <option value="">All Genres</option>
+                </select>
+                <select id="decadeFilter">
+                    <option value="">All Decades</option>
+                </select>
+                <select id="sortBy">
+                    <option value="rank">Rank</option>
+                    <option value="year">Year</option>
+                    <option value="rating">Rating</option>
+                    <option value="title">Title</option>
+                </select>
+            </div>
+        </section>
+
+        <section class="movies-grid" id="moviesGrid">
+            <!-- Movies will be inserted here by JavaScript -->
+        </section>
+
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+    </main>
+
+    <footer>
+        <!-- Copy footer from index-1.html -->
+    </footer>
+
+    <!-- TV Shows Modal -->
+    <div id="tvShowsModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center;">
+      <div style="background:#181818; color:#fff; padding:2rem 2.5rem; border-radius:12px; min-width:320px; max-width:90vw; max-height:90vh; overflow:auto; position:relative; box-shadow:0 8px 40px #000b;">
+        <button id="closeTvShowsModal" style="position:absolute; top:1rem; right:1rem; background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;">&times;</button>
+        <h2 style="margin-top:0;">TV Shows</h2>
+        <p>Here you can display your TV Shows list, filters, or any TV show content.</p>
+        <!-- Add your TV Shows content here -->
+      </div>
+    </div>
+
+    <script type="module" src="./mustwatch.js"></script>
+
+</body>
+</html>

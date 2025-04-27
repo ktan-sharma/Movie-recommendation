@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - FLICKPICK</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <h1>FLICKPICK</h1>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="#">Latest Reviews</a>
+                <a href="#">Top Rated</a>
+                <div class="user-profile">
+                    <div class="profile-container">
+                        <img id="profilePicture" src="" alt="Profile">
+                        <input type="file" id="profilePicInput" accept="image/*" style="display:none;">
+                        <button id="changePicBtn" style="margin-top:0.5rem;">Change Picture</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="profile-page">
+        <div class="profile-header">
+            <div class="profile-info">
+                <img id="largeProfilePic" src="" alt="Profile Picture" style="cursor:pointer;">
+                <input type="file" id="largeProfilePicInput" accept="image/*" style="display:none;">
+                <div class="profile-details">
+                    <div style="display:flex;align-items:center;gap:0.5rem;">
+  <h2 id="profileName" style="margin:0;">User Name</h2>
+  <button id="editNameBtn" title="Edit Username" style="background:none;border:none;cursor:pointer;color:#fff;font-size:1.2rem;"><i class="fas fa-pencil-alt"></i></button>
+</div>
+<div id="editNameArea" style="display:none;align-items:center;gap:0.5rem;margin-top:0.5rem;">
+  <input type="text" id="editNameInput" maxlength="30" style="padding:0.3rem;border-radius:4px;border:1px solid #888;">
+  <button id="saveNameBtn" style="padding:0.3rem 0.8rem;border-radius:4px;background:#e50914;color:#fff;border:none;">Save</button>
+  <button id="cancelNameBtn" style="padding:0.3rem 0.8rem;border-radius:4px;background:#444;color:#fff;border:none;">Cancel</button>
+</div>
+                    <p id="profileEmail">user@email.com</p>
+                    <p>Member since: <span id="memberSince"></span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-content">
+            <div class="profile-tabs">
+                <button class="tab-button active" data-tab="watchlist">My Watchlist</button>
+                <button class="tab-button" data-tab="ratings">My Reviews</button>
+            </div>
+
+            <div class="tab-content">
+                <div id="watchlist" class="tab-panel active">
+                    <div class="movie-grid" id="watchlistGrid">
+                        <!-- Watchlist movies will be inserted here -->
+                    </div>
+                </div>
+                <div id="ratings" class="tab-panel">
+                    <div class="movie-grid" id="ratingsGrid">
+                        <!-- Rated movies will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p> 2024 FLICKPICK. All rights reserved.</p>
+    </footer>
+
+    <script type="module" src="profile1.js"></script>
+</body>
+</html>
