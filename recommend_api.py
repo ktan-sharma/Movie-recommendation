@@ -17,5 +17,9 @@ def get_recommendations():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/')
+def root():
+    return 'API is running!'
+
 if __name__ == '__main__':
     app.run(debug=True)
