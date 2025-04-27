@@ -22,6 +22,10 @@ def get_recommendations():
 def root():
     return 'API is running!'
 
+@app.route('/test')
+def test_route():
+    return 'Test route works!'
+
 print("recommend_api.py loaded!")
 print(app.url_map)
 
