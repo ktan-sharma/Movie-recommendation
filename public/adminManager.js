@@ -1,5 +1,7 @@
+console.log('[adminManager.js] Loaded');
 export class AdminManager {
     constructor() {
+        console.log('[AdminManager] Constructor called');
         this.adminCredentials = {
             'shivam': 'allmighty',
             'ketan': 'ketan2004'
@@ -187,6 +189,7 @@ export class AdminManager {
     }
 
     showDashboard(username) {
+        console.log('[AdminManager] showDashboard called');
         document.getElementById('adminLoginContainer').style.display = 'none';
         document.getElementById('adminDashboard').style.display = 'block';
         
@@ -196,6 +199,8 @@ export class AdminManager {
         document.body.classList.add(`${username}-theme`);
         
         this.loadDashboardData(username);
+        // Ensure settings tab controls are initialized after dashboard is shown
+        this.setupSettingsTab();
     }
 
     hideDashboard() {
@@ -266,6 +271,80 @@ export class AdminManager {
 
         movieSearch?.addEventListener('input', () => this.filterMovies());
         movieFilter?.addEventListener('change', () => this.filterMovies());
+
+        // Add Movie Modal
+        const addMovieBtn = document.getElementById('addMovieBtn');
+        const addEditMovieModal = document.getElementById('addEditMovieModal');
+        const closeAddEditMovie = document.getElementById('closeAddEditMovie');
+        const addEditMovieForm = document.getElementById('addEditMovieForm');
+        const addEditMovieTitle = document.getElementById('addEditMovieTitle');
+
+        addMovieBtn.onclick = () => {
+            addEditMovieTitle.textContent = 'Add Movie';
+            addEditMovieForm.reset();
+            document.getElementById('movieId').value = '';
+            addEditMovieModal.style.display = 'block';
+        };
+        closeAddEditMovie.onclick = () => {
+            addEditMovieModal.style.display = 'none';
+        };
+        window.onclick = (e) => {
+            if (e.target === addEditMovieModal) addEditMovieModal.style.display = 'none';
+        };
+
+        // Handle Add/Edit Movie Form Submit
+        addEditMovieForm.onsubmit = (e) => {
+            e.preventDefault();
+            const id = document.getElementById('movieId').value;
+            const title = document.getElementById('movieTitle').value;
+            const year = document.getElementById('movieYear').value;
+            const imdbID = document.getElementById('movieImdbId').value;
+            const imdbRating = document.getElementById('movieImdbRating').value;
+            const poster = document.getElementById('moviePoster').value;
+            const movieObj = {
+                imdbID,
+                Title: title,
+                Year: year,
+                imdbRating,
+                Poster: poster || 'img/placeholder.jpg',
+            };
+            if (id) {
+                // Edit
+                this.moviesData.popular = this.moviesData.popular.map(m => m.imdbID === id ? movieObj : m);
+            } else {
+                // Add
+                this.moviesData.popular.push(movieObj);
+            }
+            this.renderMovies(this.moviesData.popular);
+            addEditMovieModal.style.display = 'none';
+        };
+
+        // Delegate Edit/Delete buttons
+        moviesGrid.onclick = (e) => {
+            const card = e.target.closest('.movie-card');
+            if (!card) return;
+            const imdbID = card.getAttribute('data-id');
+            if (e.target.closest('.fa-edit')) {
+                // Edit Movie
+                const movie = this.moviesData.popular.find(m => m.imdbID === imdbID);
+                if (movie) {
+                    addEditMovieTitle.textContent = 'Edit Movie';
+                    document.getElementById('movieId').value = movie.imdbID;
+                    document.getElementById('movieTitle').value = movie.Title;
+                    document.getElementById('movieYear').value = movie.Year;
+                    document.getElementById('movieImdbId').value = movie.imdbID;
+                    document.getElementById('movieImdbRating').value = movie.imdbRating;
+                    document.getElementById('moviePoster').value = movie.Poster;
+                    addEditMovieModal.style.display = 'block';
+                }
+            } else if (e.target.closest('.fa-trash')) {
+                // Delete Movie
+                if (confirm('Are you sure you want to remove this movie?')) {
+                    this.moviesData.popular = this.moviesData.popular.filter(m => m.imdbID !== imdbID);
+                    this.renderMovies(this.moviesData.popular);
+                }
+            }
+        };
     }
 
     async loadMovies() {
@@ -280,9 +359,21 @@ export class AdminManager {
             
             const movies = await Promise.all(
                 TOP_100_IMDB_MOVIES.slice(0, 20).map(async id => {
-                    const response = await fetch(`${BASE_URL}?i=${id}&apikey=${API_KEY}`);
-                    const data = await response.json();
-                    return data.Response === 'True' ? data : null;
+                    try {
+                        const response = await fetch(`${BASE_URL}movie/${id}?api_key=${API_KEY}`);
+                        if (!response.ok) return null;
+                        const data = await response.json();
+                        // Map TMDB fields to expected fields
+                        return {
+                            imdbID: data.imdb_id || id,
+                            Title: data.title || data.original_title || 'Unknown',
+                            Year: (data.release_date || '').slice(0, 4),
+                            imdbRating: data.vote_average ? (data.vote_average/2).toFixed(1) : 'N/A',
+                            Poster: data.poster_path ? `https://image.tmdb.org/t/p/w500${data.poster_path}` : 'img/placeholder.jpg',
+                        };
+                    } catch (e) {
+                        return null;
+                    }
                 })
             );
 
@@ -537,12 +628,63 @@ export class AdminManager {
             };
         }
         const exportBtn = document.getElementById('exportDataBtn');
-        if (exportBtn) {
-            exportBtn.onclick = () => {
-                // TODO: Implement real export logic
-                alert('Data exported! (mock)');
-            };
+console.log('Export button found:', !!exportBtn, exportBtn);
+if (exportBtn) {
+    exportBtn.onclick = async () => {
+        console.log('[Export CSV] Button clicked');
+        try {
+            // Dynamically import Firestore
+            const { getDocs, collection } = await import('https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js');
+            const { db } = await import('./firebase-config.js');
+
+            // Fetch users
+            const usersSnapshot = await getDocs(collection(db, 'users'));
+            const users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            console.log('[Export CSV] Users:', users);
+
+            // Fetch reviews
+            let reviews = [];
+            try {
+                const reviewsSnapshot = await getDocs(collection(db, 'reviews'));
+                reviews = reviewsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            } catch (e) {
+                // If no reviews collection, skip
+                reviews = [];
+            }
+            console.log('[Export CSV] Reviews:', reviews);
+
+            // Convert to CSV
+            const usersCsv = arrayToCsv(users, 'Users');
+            const reviewsCsv = arrayToCsv(reviews, 'Reviews');
+            const blob = new Blob([
+                usersCsv + '\n\n' + reviewsCsv
+            ], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `flickpick_export_${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(a);
+            console.log('[Export CSV] Triggering download', a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 0);
+        } catch (err) {
+            alert('Failed to export data.');
+            console.error('[Export CSV] Export error:', err);
         }
+    };
+}
+
+// Helper to convert array of objects to CSV
+function arrayToCsv(arr, sectionName) {
+    if (!arr.length) return `${sectionName}: No data`;
+    const keys = Object.keys(arr[0]);
+    const header = sectionName + '\n' + keys.join(',');
+    const rows = arr.map(obj => keys.map(k => JSON.stringify(obj[k] ?? '')).join(','));
+    return [header, ...rows].join('\n');
+}
     }
 
     setupReportsTab() {
@@ -642,6 +784,10 @@ export class AdminManager {
     }
 }
 
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    new AdminManager();
+});
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new AdminManager();

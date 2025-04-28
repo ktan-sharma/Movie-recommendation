@@ -114,10 +114,15 @@ export class HomePageManager {
                 const heroTitle = document.querySelector('.hero-title');
                 const heroDesc = document.querySelector('.hero-desc');
                 const moreInfoBtn = document.querySelector('.hero-btn.info');
+                const playBtn = document.getElementById('heroPlayBtn');
                 if (heroBg && heroTitle && heroDesc) {
                     heroBg.style.backgroundImage = `url('https://image.tmdb.org/t/p/original${m.backdrop_path || m.poster_path}')`;
                     heroTitle.textContent = m.title;
                     heroDesc.textContent = m.overview;
+                }
+                // Update Play button's data-title attribute
+                if (playBtn) {
+                    playBtn.setAttribute('data-title', m.title);
                 }
                 // Store the imdbID in a data attribute for the More Info button
                 if (moreInfoBtn) {

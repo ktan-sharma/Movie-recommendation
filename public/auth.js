@@ -249,8 +249,31 @@ class AuthManager {
             // Show profile icon and initials
             if (profileIcon) profileIcon.style.display = 'inline-block';
             if (profileInitials) {
-                profileInitials.style.display = 'flex';
-                profileInitials.textContent = this.getInitials(this.currentUser.name || this.currentUser.email);
+                // --- PROFILE IMAGE/INITIALS LOGIC ---
+                const navbarProfileImage = document.getElementById('navbarProfileImage');
+                const navbarProfileInitials = document.getElementById('navbarProfileInitials');
+                if (navbarProfileImage && navbarProfileInitials) {
+                    let profilePic = this.currentUser.profilePicture;
+                    if (!profilePic) {
+                        // Fallback to remote avatar
+                        profilePic = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(this.currentUser.name || 'User') + '&background=random&format=png';
+                    }
+                    // Show image if available, else initials
+                    if (this.currentUser.profilePicture) {
+                        navbarProfileImage.src = profilePic;
+                        navbarProfileImage.style.display = 'inline-block';
+                        navbarProfileInitials.style.display = 'none';
+                    } else {
+                        navbarProfileImage.style.display = 'none';
+                        // Show initials
+                        let initials = '';
+                        if (this.currentUser.name) {
+                            initials = this.currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                        }
+                        navbarProfileInitials.textContent = initials || 'U';
+                        navbarProfileInitials.style.display = 'flex';
+                    }
+                }
             }
             // Hide dropdown by default
             if (profileDropdown) profileDropdown.style.display = 'none';

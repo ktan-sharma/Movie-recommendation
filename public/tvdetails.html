@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FLICKPICK - TV Show Details">
+    <title>FLICKPICK - TV Show Details</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="fonts.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="main-header">
+        <nav>
+            <div class="nav-left">
+                <h1><a href="index.html" class="logo-link">FLICKPICK</a></h1>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="mustwatch.html">Must Watch Century</a>
+                    <a href="tvshow.html">TV Shows</a>
+                    <a href="#">My List</a>
+                </div>
+            </div>
+            <div class="nav-right" style="position:relative; justify-content: flex-end; display: flex; align-items: center; min-width: 260px;">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search movies & shows...">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div id="navbarProfileArea" style="position:relative; margin-left:auto;">
+                  <img src="" alt="Profile" class="profile-image" id="navbarProfileImage" style="display:none; width:40px; height:40px; object-fit:cover; border-radius:50%; margin-left:1rem; background:#333;">
+                  <span class="profile-initials" id="navbarProfileInitials" style="display:none; margin-left:1rem; background:#444; color:#fff; border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center; font-weight:bold;"></span>
+                  <div class="profile-dropdown" id="profileDropdown" style="display:none; position:absolute; right:0; top:110%; min-width:180px;">
+                    <a href="profile1.html" class="profile-menu-item" id="myProfileDropdown">My Profile</a>
+                    <div class="profile-menu-divider"></div>
+                    <a href="watchlist.html" class="profile-menu-item">My Watchlist</a>
+                    <div class="profile-menu-divider"></div>
+                    <a href="#" class="profile-menu-item" id="logoutBtn">Logout</a>
+                  </div>
+                  <button id="loginBtn" class="login-btn" style="margin-left:1rem;">Login</button>
+                  <button id="registerBtn" class="login-btn" style="margin-left:1rem;">Register</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main id="tvDetailsMain" class="tv-details-page">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading TV show details...</p>
+        </div>
+    </main>
+    <section id="reviewSection" class="review-section">
+        <h2>Post a Review</h2>
+        <div id="starRating" class="star-rating">
+            <span data-value="1" class="star">&#9733;</span>
+            <span data-value="2" class="star">&#9733;</span>
+            <span data-value="3" class="star">&#9733;</span>
+            <span data-value="4" class="star">&#9733;</span>
+            <span data-value="5" class="star">&#9733;</span>
+        </div>
+        <textarea id="reviewText" rows="3" placeholder="Write your review..."></textarea>
+        <button id="submitReviewBtn">Submit Review</button>
+        <div id="reviewMessage"></div>
+        <h3>Reviews</h3>
+        <div id="reviewsContainer"></div>
+    </section>
+
+    <footer>
+        <p>2024 FLICKPICK. All rights reserved.</p>
+    </footer>
+    <script type="module" src="config.js"></script>
+    <script type="module" src="auth.js"></script>
+    <script type="module" src="tvdetails.js"></script>
+    <script type="module" src="tvdetails.review.js"></script>
+</body>
+</html>

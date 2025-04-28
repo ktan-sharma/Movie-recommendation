@@ -8,6 +8,16 @@ from tqdm import tqdm
 import numpy as np
 
 # --- CONFIG ---
+
+def tmdb_to_imdb(tmdb_id):
+    """
+    Given a TMDB movie ID (as string or int), return the corresponding IMDB ID.
+    """
+    url = f"https://api.themoviedb.org/3/movie/{tmdb_id}?api_key={TMDB_API_KEY}&language=en-US"
+    r = requests.get(url)
+    data = r.json()
+    return data.get("imdb_id")
+
 SERVICE_ACCOUNT_PATH = 'flickpick-23118-firebase-adminsdk-fbsvc-4747d58b26.json'
 TMDB_API_KEY = '5e338db773fdec4213f2c68748ff8d36'  # <-- Your TMDB API key
 
@@ -37,6 +47,7 @@ def get_movie_metadata(movie_id):
             'title': data.get('title', ''),
             'genres': genres,
             'plot': data.get('overview', ''),
+            'poster_path': data.get('poster_path', ''),  # Always include poster_path for frontend
         }
     return None
 
@@ -297,6 +308,16 @@ def get_recommendations_api(user_id):
     genres = prefs.get('genres', [])
     language = prefs.get('language', 'en')
 
+    # --- Map user's watchlist TMDB IDs to IMDB IDs ---
+    watchlist_tmdb_ids = user_dict.get('watchlist', [])
+    watchlist_imdb_ids = []
+    for tmdb_id in watchlist_tmdb_ids:
+        imdb_id = tmdb_to_imdb(tmdb_id)
+        if imdb_id:
+            watchlist_imdb_ids.append(imdb_id)
+    print(f"[DEBUG] User {user_id} watchlist TMDB IDs: {watchlist_tmdb_ids}")
+    print(f"[DEBUG] User {user_id} mapped IMDB IDs: {watchlist_imdb_ids}")
+    # Now use watchlist_imdb_ids for embedding-based recommendations!
     # --- Debug output for preferences and fallback logic ---
     print(f"[DEBUG] User {user_id} preferences: genres={genres}, language={language}")
     user_has_reviews = bool(user_reviews.get(user_id))

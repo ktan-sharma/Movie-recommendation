@@ -36,7 +36,7 @@
                 <div class="nav-links">
                     <a href="index.html" class="active">Home</a>
                     <a href="mustwatch.html">Must Watch Century</a>
-                    <a href="#" id="tvShowsNav">TV Shows</a>
+                    <a href="tvshow.html">TV Shows</a>
                     <a href="#">My List</a>
                 </div>
             </div>
@@ -71,7 +71,7 @@
                 <h1 class="hero-title">Featured Movie Title</h1>
                 <p class="hero-desc">An exciting description for the featured movie goes here. Enjoy the best picks on FlickPick!</p>
                 <div class="hero-actions">
-                    <button class="hero-btn play"><i class="fas fa-play"></i> Play</button>
+                    <button class="hero-btn play" id="heroPlayBtn" data-title="Forrest Gump"><i class="fas fa-play"></i> Play</button>
                     <button class="hero-btn info"><i class="fas fa-info-circle"></i> More Info</button>
                 </div>
             </div>
@@ -220,5 +220,24 @@
         }
       });
     </script>
+<script>
+// Make Play button open current hero movie trailer on YouTube
+function searchYouTubeTrailerAndOpen(title) {
+  // Fallback: open YouTube search if API fails
+  var searchUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(title + ' official trailer');
+  // Try YouTube Data API if you have a key, else fallback
+  // For privacy, we use search page
+  window.open(searchUrl, '_blank');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  var playBtn = document.getElementById('heroPlayBtn');
+  if (playBtn) {
+    playBtn.addEventListener('click', function() {
+      var title = playBtn.getAttribute('data-title') || 'movie';
+      searchYouTubeTrailerAndOpen(title);
+    });
+  }
+});
+</script>
 </body>
 </html>
